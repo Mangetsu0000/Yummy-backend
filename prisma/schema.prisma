@@ -10,37 +10,32 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User{
-  id Int @id  @default(autoincrement())
+model User {
+  id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   email String @unique
-  hash String
+  hash  String
 
   firstName String?
-  lastName String?
+  lastName  String?
 
+  recipes Recipe[]
+  
   @@map("users")
-  Recipes Recipe[]
-
 }
 
-model Recipe{
-  id Int @id  @default(autoincrement())
+model Recipe {
+  id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  name String
-  origins String[]
-  imageUrl String
-  cookTime String
-  ingredients String[]
-  steps String[]
-  stars Int
+
+  title       String
+  description String?
 
   userId Int
-  user User @relation(fields: [userId], references: [id])
-
+  user   User @relation(fields: [userId], references: [id])
 
   @@map("recipes")
 }
