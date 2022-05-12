@@ -1,16 +1,3 @@
-/*
-  Warnings:
-
-  - You are about to drop the `Recipe` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `User` table. If the table is not empty, all the data it contains will be lost.
-
-*/
--- DropTable
-DROP TABLE "Recipe";
-
--- DropTable
-DROP TABLE "User";
-
 -- CreateTable
 CREATE TABLE "users" (
     "id" SERIAL NOT NULL,
@@ -29,13 +16,8 @@ CREATE TABLE "recipes" (
     "id" SERIAL NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
-    "name" TEXT NOT NULL,
-    "origins" TEXT[],
-    "imageUrl" TEXT NOT NULL,
-    "cookTime" TEXT NOT NULL,
-    "ingredients" TEXT[],
-    "steps" TEXT[],
-    "stars" INTEGER NOT NULL,
+    "title" TEXT NOT NULL,
+    "description" TEXT,
     "userId" INTEGER NOT NULL,
 
     CONSTRAINT "recipes_pkey" PRIMARY KEY ("id")
