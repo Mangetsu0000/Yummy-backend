@@ -7,6 +7,10 @@ export class RecipeService {
   constructor(private prisma: PrismaService) {}
   getRecipes(userId: number) {}
 
+  getAllRecipes() {
+    return this.prisma.recipe.findMany();
+  }
+
   getRecipeById(recipeId: number, userId: number) {
     return this.prisma.recipe.findFirst({
       where: {
