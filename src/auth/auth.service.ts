@@ -1,5 +1,5 @@
-import { Injectable, ForbiddenException } from '@nestjs/common';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { ForbiddenException, Injectable } from '@nestjs/common';
+import { PrismaService } from '../prisma/prisma.service';
 import { AuthDto } from './dto';
 import * as argon from 'argon2';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
@@ -14,10 +14,9 @@ export class AuthService {
     private config: ConfigService,
   ) {}
   async signup(dto: AuthDto) {
-    //generate the password hash
+    //1- generate password hash
     const hash = await argon.hash(dto.password);
-
-    //save the new user in the db
+    //2- save new user in database
     try {
       const user = await this.prisma.user.create({
         data: {
@@ -35,38 +34,38 @@ export class AuthService {
       throw error;
     }
   }
-
   async signin(dto: AuthDto) {
-    // find the user by email
+    //1- find user by email
     const user = await this.prisma.user.findUnique({
       where: {
         email: dto.email,
       },
     });
-    //if user doesnt exist throw an exception
+    // if user doesn't exist throw exception (guard)
     if (!user) throw new ForbiddenException('Credentials incorrect');
-    // compare password
+    //2- compare pw
     const pwMatches = await argon.verify(user.hash, dto.password);
-    // password incorrect throw exception
+    // if password incorrect throw exception (guard)
     if (!pwMatches) throw new ForbiddenException('Credentials incorrect');
-    //send back the user
+    //3- send back user
     return this.signToken(user.id, user.email);
   }
-
   async signToken(
     userId: number,
     email: string,
-  ): Promise<{ access_token: string }> {
+  ): Promise<{ access_token: String }> {
     const payload = {
       sub: userId,
       email,
     };
     const secret = this.config.get('JWT_SECRET');
+
     const token = await this.jwt.signAsync(payload, {
-      expiresIn: '15m',
+      expiresIn: '60m',
       secret: secret,
     });
-
-    return { access_token: token };
+    return {
+      access_token: token,
+    };
   }
 }
